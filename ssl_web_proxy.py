@@ -3,15 +3,22 @@ import os,sys,thread,socket,ssl
 MAX_QUEUE = 20          # Max number of connection
 MAX_PKT_SIZE = 99999     # Max size of packet
 
+# Gorany's SSL proxy
+# Usage :   web browser 
+
+
 def gen_cert(webserver):
+    # generate cert
     cmd = 'cd cert-master && sh _make_site.sh '+ webserver
     os.system(cmd)
 
 def init_cert():
+    # initialize cert
     cmd = 'cd cert-master && sh _init_site.sh '
     os.system(cmd)
 
 def main():
+    
     port = 4433
     host = ''
 
@@ -39,7 +46,7 @@ def proxy_thread(conn, client_addr):
     # get request from web browser
     request = conn.recv(MAX_PKT_SIZE)
     
-    #Find CONNECT method and parsing 
+    #Find CONNECT method and parse it
     if request.find('CONNECT'):
 	line = request.split('\n')[0]
 	url = line.split(' ')[1]
@@ -55,7 +62,7 @@ def proxy_thread(conn, client_addr):
 	# host 
 	webserver = temp[:webserver_pos]
 	
-	# Connection established for hello
+	# Answer for connection request
 	conn.send('HTTP/1.1 Connection established\r\n\r\n')
 
 	# generate certification
